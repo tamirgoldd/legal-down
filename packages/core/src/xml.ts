@@ -119,32 +119,70 @@ export function replaceTextWithRefField(
   display: string,
   bookmarkName: string
 ): { xml: string; replaced: boolean } {
-  let replaced = false;
-  const xml = paragraphXml.replace(/<w:r\b[^>]*>[\s\S]*?<\/w:r>/g, (runXml) => {
-    if (replaced || /<w:(?:instrText|fldChar)\b/.test(runXml)) return runXml;
-    const textMatches = [...runXml.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g)];
-    if (textMatches.length !== 1) return runXml;
-    const textMatch = textMatches[0];
-    if (!textMatch || textMatch.index === undefined) return runXml;
-    const decoded = decodeXml(textMatch[1] ?? "");
-    const index = decoded.indexOf(display);
-    if (index < 0) return runXml;
-    const runProperties = runXml.match(/<w:rPr\b[^>]*>[\s\S]*?<\/w:rPr>/)?.[0] ?? "";
-    const before = decoded.slice(0, index);
-    const after = decoded.slice(index + display.length);
-    const instruction = ` REF ${bookmarkName} \\r \\h `;
-    replaced = true;
-    return [
-      textRun(before, runProperties),
-      `<w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>`,
-      `<w:r><w:instrText xml:space="preserve">${encodeXml(instruction)}</w:instrText></w:r>`,
-      `<w:r><w:fldChar w:fldCharType="separate"/></w:r>`,
-      textRun(display, runProperties),
-      `<w:r><w:fldChar w:fldCharType="end"/></w:r>`,
-      textRun(after, runProperties)
-    ].join("");
-  });
-  return { xml, replaced };
+  interface TextRunLocation {
+    xmlStart: number;
+    xmlEnd: number;
+    textStart: number;
+    textEnd: number;
+    text: string;
+    runProperties: string;
+  }
+
+  const locations: TextRunLocation[] = [];
+  let searchable = "";
+  let insideField = false;
+  for (const match of paragraphXml.matchAll(/<w:r\b[^>]*>[\s\S]*?<\/w:r>/g)) {
+    const runXml = match[0];
+    const xmlStart = match.index ?? 0;
+    const beginsField = /<w:fldChar\b[^>]*\bw:fldCharType=["']begin["']/.test(runXml);
+    const endsField = /<w:fldChar\b[^>]*\bw:fldCharType=["']end["']/.test(runXml);
+    if (beginsField) insideField = true;
+    if (insideField || /<w:instrText\b/.test(runXml)) {
+      searchable += "\u0000";
+      if (endsField) insideField = false;
+      continue;
+    }
+    if (/<w:(?:tab|br|cr|drawing|object)\b/.test(runXml)) {
+      searchable += "\u0000";
+      continue;
+    }
+    const text = visibleText(runXml);
+    if (!text) continue;
+    const textStart = searchable.length;
+    searchable += text;
+    locations.push({
+      xmlStart,
+      xmlEnd: xmlStart + runXml.length,
+      textStart,
+      textEnd: searchable.length,
+      text,
+      runProperties: runXml.match(/<w:rPr\b[^>]*>[\s\S]*?<\/w:rPr>/)?.[0] ?? ""
+    });
+    if (endsField) insideField = false;
+  }
+
+  const matchStart = searchable.indexOf(display);
+  if (matchStart < 0) return { xml: paragraphXml, replaced: false };
+  const matchEnd = matchStart + display.length;
+  const startRun = locations.find((location) => location.textStart <= matchStart && location.textEnd > matchStart);
+  const endRun = locations.find((location) => location.textStart < matchEnd && location.textEnd >= matchEnd);
+  if (!startRun || !endRun) return { xml: paragraphXml, replaced: false };
+  const before = startRun.text.slice(0, matchStart - startRun.textStart);
+  const after = endRun.text.slice(matchEnd - endRun.textStart);
+  const instruction = ` REF ${bookmarkName} \\r \\h `;
+  const replacement = [
+    textRun(before, startRun.runProperties),
+    `<w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>`,
+    `<w:r><w:instrText xml:space="preserve">${encodeXml(instruction)}</w:instrText></w:r>`,
+    `<w:r><w:fldChar w:fldCharType="separate"/></w:r>`,
+    textRun(display, startRun.runProperties),
+    `<w:r><w:fldChar w:fldCharType="end"/></w:r>`,
+    textRun(after, endRun.runProperties)
+  ].join("");
+  return {
+    xml: `${paragraphXml.slice(0, startRun.xmlStart)}${replacement}${paragraphXml.slice(endRun.xmlEnd)}`,
+    replaced: true
+  };
 }
 
 export function maxNumericAttribute(xml: string, qualifiedName: string): number {

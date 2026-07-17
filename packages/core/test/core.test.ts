@@ -104,6 +104,26 @@ describe("OOXML rebuild", () => {
     expect((await compareTextModuloNumberTokens(input, result.bytes)).equal).toBe(true);
   });
 
+  it("converts a reference split across differently formatted Word runs", async () => {
+    const input = await createSyntheticDocx([
+      { text: "Section 1.01 Target" },
+      { text: "Subject to Section 1.01." }
+    ]);
+    const zip = await JSZip.loadAsync(input);
+    const document = await zip.file("word/document.xml")?.async("string");
+    zip.file("word/document.xml", document?.replace(
+      "<w:r><w:t xml:space=\"preserve\">Subject to Section 1.01.</w:t></w:r>",
+      "<w:r><w:t>Subject to Section 1.</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>01</w:t></w:r><w:r><w:t>.</w:t></w:r>"
+    ) ?? "");
+    const splitInput = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+    const result = await repairDocument(splitInput);
+    const output = await JSZip.loadAsync(result.bytes);
+    const outputDocument = await output.file("word/document.xml")?.async("string");
+
+    expect(outputDocument).toContain(" REF _LDRef_1 \\r \\h ");
+    expect((await compareTextModuloNumberTokens(splitInput, result.bytes)).equal).toBe(true);
+  });
+
   it("is idempotent after repair", async () => {
     const input = await createSyntheticDocx(basicParagraphs);
     const first = await repairDocument(input);
