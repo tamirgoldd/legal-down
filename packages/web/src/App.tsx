@@ -30,9 +30,9 @@ function download(bytes: Uint8Array, name: string): void {
 function PrivacyProof(): React.JSX.Element {
   return (
     <div className="privacy-proof" aria-label="Privacy guarantees">
-      <span><i aria-hidden="true">01</i> Runs in this tab</span>
-      <span><i aria-hidden="true">02</i> No upload</span>
-      <span><i aria-hidden="true">03</i> Works offline</span>
+      <span><i aria-hidden="true">01</i> Local processing</span>
+      <span><i aria-hidden="true">02</i> No document upload</span>
+      <span><i aria-hidden="true">03</i> No generative AI</span>
     </div>
   );
 }
@@ -61,20 +61,70 @@ function BeforeAfter(): React.JSX.Element {
   );
 }
 
+function PrivacyArchitecture(): React.JSX.Element {
+  return (
+    <section className="privacy-architecture" id="privacy">
+      <div className="section-intro privacy-intro">
+        <span className="eyebrow">Privacy, enforced by the architecture</span>
+        <h2>Your contract never becomes a prompt.</h2>
+        <p>A DOCX file is really a ZIP package of small XML files. Word Order opens that package in your browser's memory, checks the document structure with fixed rules, and writes a repaired copy back to your device. There is no document server in the middle.</p>
+      </div>
+      <div className="privacy-boundary" aria-label="Word Order privacy boundary">
+        <div className="boundary-device">
+          <div className="boundary-label"><span>Your device</span><small>Document stays inside this boundary</small></div>
+          <ol className="privacy-flow">
+            <li><i>01</i><strong>Read the copy</strong><p>The browser reads your selected file into local memory.</p></li>
+            <li><i>02</i><strong>Open the XML</strong><p>Its Word XML, lists, styles, fields, and margins are unpacked locally.</p></li>
+            <li><i>03</i><strong>Apply fixed rules</strong><p>Deterministic checks create an inspectable repair plan—no model guesses at your meaning.</p></li>
+            <li><i>04</i><strong>Download locally</strong><p>Only targeted XML is repaired; untouched package parts are carried into a new DOCX.</p></li>
+          </ol>
+        </div>
+        <aside className="boundary-network">
+          <span className="network-line" aria-hidden="true">×</span>
+          <p className="eyebrow">Not sent anywhere</p>
+          <ul>
+            <li>Document bytes</li>
+            <li>Contract text</li>
+            <li>Repair plan</li>
+            <li>Repaired output</li>
+          </ul>
+          <p className="boundary-note">The static site has no upload endpoint, account, document database, analytics, or AI provider.</p>
+        </aside>
+      </div>
+      <div className="language-lock">
+        <span className="lock-mark" aria-hidden="true">Aa</span>
+        <div><span className="eyebrow">Language locked</span><h3>Structure changes. Meaning does not.</h3></div>
+        <p>Generative AI can paraphrase, omit, or invent text. Word Order does not generate prose at all. It makes targeted changes to OOXML instructions—the machinery Word uses for numbering, references, styles, spacing, and layout—and tests that the document's visible text is preserved.</p>
+      </div>
+    </section>
+  );
+}
+
+function AddinNotice(): React.JSX.Element {
+  return (
+    <section className="addin-notice" id="word-addin">
+      <div><span className="eyebrow">Word add-in</span><h2>Repair inside Word.</h2><p>The add-in uses the same local, deterministic engine. If an older installation still says “Legal Down” or shows a 404 after the rename, replace its cached manifest with the current Word Order version and restart Word.</p></div>
+      <div className="addin-actions"><a className="button dark" href="addin/manifest.xml" download>Download current manifest</a><a className="text-link" href="https://github.com/tamirgoldd/word-order/blob/main/docs/addin.md" target="_blank" rel="noreferrer">Installation and cache help ↗</a></div>
+    </section>
+  );
+}
+
 function ProductStory(): React.JSX.Element {
   return (
     <>
       <section className="trust-strip" aria-label="Product guarantees">
-        <article><span>01</span><strong>Local by design</strong><p>Your document bytes never leave the browser.</p></article>
-        <article><span>02</span><strong>Native Word output</strong><p>Real lists, bookmarks, fields, and reusable styles.</p></article>
-        <article><span>03</span><strong>Review before repair</strong><p>Every proposed change is visible before download.</p></article>
-        <article><span>04</span><strong>Open source</strong><p>Inspect the engine, run it offline, or contribute.</p></article>
+        <article><span>01</span><strong>No document upload</strong><p>Your file is processed in local memory, never sent to Word Order.</p></article>
+        <article><span>02</span><strong>No generative AI</strong><p>No model paraphrases, reframes, omits, or invents your language.</p></article>
+        <article><span>03</span><strong>Inspectable repairs</strong><p>Fixed rules show every proposed structural change first.</p></article>
+        <article><span>04</span><strong>Open source</strong><p>Verify the privacy boundary, run offline, or contribute.</p></article>
       </section>
+
+      <PrivacyArchitecture />
 
       <BeforeAfter />
 
       <section className="how" id="how-it-works">
-        <div className="section-intro compact-intro"><span className="eyebrow">How it works</span><h2>A repair plan<br />you can inspect.</h2><p>No generative AI and no silent rewriting. The same deterministic engine powers the website, CLI, and Word add-in.</p></div>
+        <div className="section-intro compact-intro"><span className="eyebrow">How it works</span><h2>A repair plan<br />you can inspect.</h2><p>No generative AI, no language model, and no silent rewriting. The same deterministic engine powers the website, CLI, and Word add-in.</p></div>
         <div className="principles">
           <article><span>01</span><h3>Inventory</h3><p>Reads typed numbers, Word lists, indentation, styles, tables, fields, and references.</p></article>
           <article><span>02</span><h3>Plan</h3><p>Shows each proposed repair and stops when the document is unsafe or ambiguous.</p></article>
@@ -96,8 +146,10 @@ function ProductStory(): React.JSX.Element {
 
       <section className="open-source">
         <div><span className="eyebrow">Built in public</span><h2>The engine is the product.</h2></div>
-        <div className="source-copy"><p>Word Order is a small TypeScript monorepo with one DOM-free OOXML core shared by the web app, CLI, and Word add-in. Unknown XML and untouched package parts are preserved.</p><div className="source-actions"><a className="button dark" href="https://github.com/tamirgoldd/word-order" target="_blank" rel="noreferrer">Explore the GitHub repo ↗</a><a className="text-link" href="https://github.com/tamirgoldd/word-order/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">Read the architecture</a></div></div>
+        <div className="source-copy"><p>Word Order is a small TypeScript monorepo with one DOM-free OOXML core shared by the web app, CLI, and Word add-in. The public code shows exactly which Word XML parts are inspected and changed. Unknown XML and untouched package parts are preserved.</p><div className="source-actions"><a className="button dark" href="https://github.com/tamirgoldd/word-order" target="_blank" rel="noreferrer">Explore the GitHub repo ↗</a><a className="text-link" href="https://github.com/tamirgoldd/word-order/blob/main/docs/architecture.md" target="_blank" rel="noreferrer">Read the architecture</a></div></div>
       </section>
+
+      <AddinNotice />
     </>
   );
 }
@@ -295,6 +347,7 @@ export function App(): React.JSX.Element {
         <a className="brand" href="." aria-label="Word Order home"><span className="brand-mark"><i>W</i><i>O</i></span><span>Word Order</span></a>
         <nav>
           <a href="#example">Before &amp; after</a>
+          <a href="#privacy">Privacy</a>
           <a href="#how-it-works">How it works</a>
           <a href="#what-it-fixes">What it fixes</a>
           <a className="nav-source" href="https://github.com/tamirgoldd/word-order" target="_blank" rel="noreferrer">GitHub ↗</a>
@@ -306,7 +359,7 @@ export function App(): React.JSX.Element {
           <div className="hero-copy">
             <p className="kicker"><span /> Private DOCX repair for legal teams</p>
             <h1>Put broken Word documents <em>back in order.</em></h1>
-            <p className="lede">Repair numbering, cross-references, fonts, spacing, alignment, and margins in one inspectable pass. The document stays on your device.</p>
+            <p className="lede">Repair numbering, cross-references, fonts, spacing, alignment, and margins in one inspectable pass. No cloud upload. No AI rewrite. Your document and its language stay on your device.</p>
             {!plan && <div className="hero-actions"><a className="button" href="#repair">Repair a document</a><a className="text-link" href="#example">See a real before &amp; after ↓</a></div>}
             <PrivacyProof />
           </div>
@@ -314,7 +367,7 @@ export function App(): React.JSX.Element {
         </section>
 
         <section className="workspace" id="repair" aria-live="polite">
-          {!plan && <div className="workspace-heading"><span className="eyebrow">Try Word Order</span><h2>Repair a copy. Keep the original.</h2><p>No sign-up, no upload, no document telemetry.</p></div>}
+          {!plan && <div className="workspace-heading"><span className="eyebrow">Try Word Order</span><h2>Repair a copy. Keep the original.</h2><p>No sign-up, upload endpoint, AI provider, or document telemetry.</p></div>}
           {!plan ? (
             <div
               className={dragging ? "dropzone dragging" : "dropzone"}
@@ -371,16 +424,18 @@ export function App(): React.JSX.Element {
             <ProductStory />
             <section className="faq">
               <span className="eyebrow">Plain answers</span>
-              <details><summary>Does my contract leave the computer?</summary><p>No. The page has no document API or upload endpoint. Parsing and rebuilding happen in this browser tab, and the app can run after you disconnect from the internet.</p></details>
+              <details><summary>Does my contract leave the computer?</summary><p>No. The static page has no document API or upload endpoint. Your browser reads the DOCX into local memory, repairs it there, and downloads a new copy. The app can keep working after you disconnect from the internet.</p></details>
+              <details><summary>Is any contract text sent to an AI model?</summary><p>No. Word Order does not use generative AI or a language model. It never turns your document into a prompt. Fixed, open-source rules inspect Word's XML instructions and preserve the visible wording.</p></details>
               <details><summary>Will the numbers still work after someone edits the file?</summary><p>Yes. Word Order creates Word's native multilevel numbering rather than hardcoded text, then uses bookmarks and REF fields for cross-references.</p></details>
-              <details><summary>Does it rewrite contract language?</summary><p>No. It normalizes styles, spacing, margins, highlighting, and structure. Suspiciously long run-on paragraphs are flagged for human review without changing their wording.</p></details>
+              <details><summary>Does it rewrite or “improve” contract language?</summary><p>No. It changes formatting and Word structure, not prose. Suspiciously long run-on paragraphs are flagged for human review without inserting breaks or changing their wording.</p></details>
               <details><summary>What happens to tracked changes?</summary><p>Word Order stops and asks you to accept or reject them first. It does not attempt a risky repair through revision markup.</p></details>
+              <details><summary>Why does my Word add-in say “Legal Down” or show a 404?</summary><p>That is the pre-rename manifest cached by Word. <a href="addin/manifest.xml" download>Download the current Word Order manifest</a>, replace the old sideloaded copy, and restart Word. The installation guide includes cache-clearing steps if the old name remains.</p></details>
             </section>
           </>
         )}
       </main>
 
-      <footer><div><a className="brand footer-brand" href="." aria-label="Word Order home"><span className="brand-mark"><i>W</i><i>O</i></span><span>Word Order</span></a><p>Open source document repair. Not legal advice.<br />Not affiliated with or endorsed by Microsoft.</p></div><div className="footer-links"><a href="#repair">Repair a document</a><a href="https://github.com/tamirgoldd/word-order">GitHub ↗</a><span>MIT licensed · 2026</span></div></footer>
+      <footer><div><a className="brand footer-brand" href="." aria-label="Word Order home"><span className="brand-mark"><i>W</i><i>O</i></span><span>Word Order</span></a><p>Privacy-first, open-source document repair. Not legal advice.<br />Not affiliated with or endorsed by Microsoft.</p></div><div className="footer-links"><a href="#repair">Repair a document</a><a href="addin/manifest.xml" download>Word add-in manifest</a><a href="https://github.com/tamirgoldd/word-order">GitHub ↗</a><span>MIT licensed · 2026</span></div></footer>
     </div>
   );
 }

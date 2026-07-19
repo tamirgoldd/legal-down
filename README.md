@@ -8,9 +8,9 @@
 
 [Try the web app](https://tamirgoldd.github.io/word-order/) · [See the real before and after](#before--after) · [Read the architecture](docs/architecture.md)
 
-Word Order is an open-source, deterministic DOCX repair engine for legal documents. It fixes broken numbering, dead cross-references, mixed fonts and sizes, accidental emphasis, alignment, indents, spacing, highlighting, and uneven margins without uploading the file or rewriting its language.
+Word Order is a privacy-first, open-source DOCX repair engine for legal documents. It fixes broken numbering, dead cross-references, mixed fonts and sizes, accidental emphasis, alignment, indents, spacing, highlighting, and uneven margins without uploading the file or sending contract text to an AI provider.
 
-The web app runs entirely in the browser and works offline. The CLI supports batch checks, and the Word add-in is a thin interface over the same repair engine.
+The web app runs entirely in the browser and works offline. There is no document backend, account, analytics, content telemetry, or generative AI. The CLI supports batch checks, and the Word add-in is a thin interface over the same deterministic repair engine.
 
 > Early alpha: work on a copy and review every proposed change. Word Order refuses to repair documents with tracked changes or unresolved structural ambiguity.
 
@@ -34,6 +34,25 @@ These images were rendered from the actual synthetic input and repaired DOCX fil
 
 The output uses native Word multilevel lists, bookmarks, fields, and named styles. It keeps working when someone edits the repaired document in Word.
 
+## Privacy-first by architecture
+
+Word Order does not ask you to trust a privacy promise wrapped around a cloud service. The web app is a static program that downloads to your browser. It has no upload endpoint, document database, account system, analytics, or connection to an AI provider. Its production Content Security Policy also blocks browser connection requests.
+
+A `.docx` file is a ZIP package containing XML instructions for text, numbering, styles, fields, margins, and relationships. The repair happens like this:
+
+1. Your browser reads the selected DOCX into local memory. The file input is not submitted anywhere.
+2. JSZip opens the package in that tab. The engine inventories Word's XML structure and visible text.
+3. Fixed TypeScript rules build an inspectable repair plan. No language model predicts what the contract “should” say.
+4. The engine changes only targeted OOXML parts, preserves unknown XML and untouched ZIP members, and downloads a new DOCX to your device.
+
+| The network receives | The network does not receive |
+| --- | --- |
+| Static Word Order HTML, CSS, and JavaScript when you open the site | Your document bytes, extracted contract text, repair plan, or repaired output |
+
+### Why there are no AI hallucinations
+
+Generative AI can paraphrase, omit, invent, or reframe language. Word Order never generates prose. It repairs Word's structural instructions—such as list definitions, bookmarks, `REF` fields, named styles, spacing, and margins—while treating visible document text as an invariant. Corpus tests compare text before and after repair and fail if wording changes outside recognized typed-number tokens. Ambiguous numbering and long run-on clauses are surfaced for human review instead of being guessed or rewritten.
+
 ## Try it locally
 
 Requires Node.js 22+ and pnpm 11+.
@@ -54,11 +73,17 @@ pnpm --filter @word-order/cli start -- fix agreement.docx \
 
 ## Safety model
 
-- Document bytes stay on the device. There is no backend, account, analytics, document logging, or content telemetry.
+- Document bytes and extracted text stay on the device. There is no backend, upload API, account, analytics, document logging, AI provider, or content telemetry.
 - `scan` produces an inspectable plan. `fix` refuses tracked changes and unresolved anomalies.
 - Wording is never silently edited. Editorial concerns are warnings, not automatic rewrites.
 - Untouched ZIP members and out-of-scope OOXML parts are preserved.
 - The input file is never overwritten.
+
+## Word add-in
+
+Download the [current hosted manifest](https://tamirgoldd.github.io/word-order/addin/manifest.xml) to use the same local repair engine inside Word.
+
+If the task pane still says **Legal Down** or shows a GitHub Pages 404, Word is using the manifest from before the repository rename. Replace that old sideloaded manifest with the current one and restart Word. On Mac, the sideload folder is `~/Library/Containers/com.microsoft.Word/Data/Documents/wef`. See the [complete add-in installation and cache guide](docs/addin.md).
 
 ## Project map
 

@@ -5,11 +5,11 @@
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
   xsi:type="TaskPaneApp">
   <Id>3fb52ee6-e0a1-4a87-998d-908df594e15e</Id>
-  <Version>0.1.0.0</Version>
+  <Version>0.2.0.0</Version>
   <ProviderName>Word Order contributors</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Word Order"/>
-  <Description DefaultValue="Repair Word numbering, cross-references, and formatting locally."/>
+  <Description DefaultValue="Privacy-first repair for Word numbering, cross-references, and formatting."/>
   <IconUrl DefaultValue="https://tamirgoldd.github.io/word-order/addin/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://tamirgoldd.github.io/word-order/addin/icon-80.png"/>
   <SupportUrl DefaultValue="https://github.com/tamirgoldd/word-order/issues"/>

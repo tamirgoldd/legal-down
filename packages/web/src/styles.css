@@ -154,6 +154,33 @@ code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; }
 .trust-strip strong { display: block; margin-top: 35px; font: 400 22px "Iowan Old Style", Baskerville, Georgia, serif; }
 .trust-strip p { margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
 
+.privacy-architecture { margin-bottom: 130px; padding: 0 4%; }
+.privacy-intro { max-width: 920px; }
+.privacy-intro h2 { max-width: 850px; }
+.privacy-intro p { max-width: 780px; }
+.privacy-boundary { display: grid; grid-template-columns: minmax(0, 1fr) 275px; margin-top: 56px; border: 1px solid var(--line); background: var(--cream); box-shadow: 0 28px 70px #173f3512; }
+.boundary-device { padding: 30px; }
+.boundary-label { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 22px; border-bottom: 1px solid var(--line); font: 600 10px "SFMono-Regular", Consolas, monospace; text-transform: uppercase; letter-spacing: .12em; }
+.boundary-label span { color: var(--forest); }
+.boundary-label small { color: var(--muted); font: inherit; letter-spacing: .04em; }
+.privacy-flow { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; padding: 0; list-style: none; }
+.privacy-flow li { min-height: 230px; padding: 28px 22px; border-right: 1px solid var(--soft-line); }
+.privacy-flow li:last-child { border-right: 0; }
+.privacy-flow i { color: var(--orange); font: 10px "SFMono-Regular", Consolas, monospace; font-style: normal; }
+.privacy-flow strong { display: block; margin-top: 42px; font: 400 23px/1.1 "Iowan Old Style", Baskerville, Georgia, serif; }
+.privacy-flow p { margin: 11px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.boundary-network { position: relative; padding: 30px; overflow: hidden; background: var(--forest); color: var(--cream); }
+.boundary-network::before { content: ""; position: absolute; inset: 12px; border: 1px solid #ffffff1a; pointer-events: none; }
+.network-line { position: relative; z-index: 1; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--orange); color: white; font: 400 27px/1 "Iowan Old Style", Baskerville, Georgia, serif; }
+.boundary-network .eyebrow { position: relative; z-index: 1; margin: 32px 0 16px; color: var(--lime); }
+.boundary-network ul { position: relative; z-index: 1; margin: 0; padding: 0; list-style: none; }
+.boundary-network li { padding: 9px 0; border-top: 1px solid #ffffff22; font-size: 13px; }
+.boundary-note { position: relative; z-index: 1; margin: 22px 0 0; color: #b9cdc5; font-size: 11px; line-height: 1.6; }
+.language-lock { display: grid; grid-template-columns: auto .8fr 1.5fr; gap: 26px; align-items: center; margin-top: 20px; padding: 30px; border: 1px solid var(--line); background: #ebe7dc; }
+.lock-mark { width: 58px; height: 58px; display: grid; place-items: center; background: var(--orange); color: white; font: 400 22px "Iowan Old Style", Baskerville, Georgia, serif; }
+.language-lock h3 { margin: 6px 0 0; font: 400 27px "Iowan Old Style", Baskerville, Georgia, serif; }
+.language-lock > p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+
 .section-intro { max-width: 800px; }
 .section-intro h2, .open-source h2 { margin: 14px 0 22px; font: 400 clamp(46px, 5.8vw, 74px)/.94 "Iowan Old Style", Baskerville, Georgia, serif; letter-spacing: -.035em; }
 .section-intro p { max-width: 680px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
@@ -195,6 +222,11 @@ code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; }
 .source-actions { display: flex; align-items: center; gap: 24px; margin-top: 28px; }
 .open-source .text-link { text-decoration-color: #ffffff8a; }
 
+.addin-notice { margin: -60px 0 130px; padding: 45px 50px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 65px; border: 1px solid var(--line); background: var(--mint); }
+.addin-notice h2 { margin: 8px 0 8px; font: 400 38px "Iowan Old Style", Baskerville, Georgia, serif; }
+.addin-notice p { max-width: 720px; margin: 0; color: #315247; font-size: 13px; line-height: 1.65; }
+.addin-actions { min-width: 255px; display: grid; justify-items: start; gap: 18px; }
+
 .faq { max-width: 860px; margin: 0 auto 140px; }
 .faq > .eyebrow { display: block; margin-bottom: 15px; }
 .faq details { border-top: 1px solid var(--line); padding: 24px 0; }
@@ -215,6 +247,13 @@ footer p { margin: 18px 0 0; line-height: 1.6; }
   .trust-strip article:nth-child(2) { border-right: 0; }
   .trust-strip article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .how, .open-source { grid-template-columns: 1fr; gap: 55px; }
+  .privacy-boundary { grid-template-columns: 1fr; }
+  .privacy-flow { grid-template-columns: repeat(2, 1fr); }
+  .privacy-flow li:nth-child(2) { border-right: 0; }
+  .privacy-flow li:nth-child(-n+2) { border-bottom: 1px solid var(--soft-line); }
+  .language-lock { grid-template-columns: auto 1fr; }
+  .language-lock > p { grid-column: 1 / -1; }
+  .addin-notice { grid-template-columns: 1fr; gap: 30px; }
   .coverage-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -244,6 +283,16 @@ footer p { margin: 18px 0 0; line-height: 1.6; }
   .trust-strip article { min-height: 135px; border-right: 0; border-bottom: 1px solid var(--line); }
   .trust-strip article:last-child { border-bottom: 0; }
   .trust-strip strong { margin-top: 20px; }
+  .privacy-architecture { margin-bottom: 90px; padding: 0; }
+  .privacy-boundary { margin-top: 38px; }
+  .boundary-device { padding: 22px; }
+  .boundary-label { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .privacy-flow { grid-template-columns: 1fr; }
+  .privacy-flow li { min-height: auto; padding: 24px 10px; border-right: 0; border-bottom: 1px solid var(--soft-line); }
+  .privacy-flow li:last-child { border-bottom: 0; }
+  .privacy-flow strong { margin-top: 22px; }
+  .language-lock { grid-template-columns: 1fr; padding: 24px; }
+  .language-lock > p { grid-column: auto; }
   .example-section, .coverage { padding-block: 90px; }
   .comparison { grid-template-columns: 1fr; gap: 20px; }
   .comparison-arrow { transform: rotate(90deg); margin: 8px 0; }
@@ -255,6 +304,8 @@ footer p { margin: 18px 0 0; line-height: 1.6; }
   .coverage-grid article { min-height: auto; }
   .open-source { margin: 90px 0; padding: 42px 28px; }
   .source-actions { align-items: flex-start; flex-direction: column; }
+  .addin-notice { margin: -30px 0 90px; padding: 34px 26px; }
+  .addin-actions { min-width: 0; }
   footer { gap: 35px; flex-direction: column; }
   .footer-links { justify-items: start; }
 }
