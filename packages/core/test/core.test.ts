@@ -120,9 +120,9 @@ describe("OOXML rebuild", () => {
     const outputStyles = await output.file("word/styles.xml")?.async("string") ?? "";
     const outputNumbering = await output.file("word/numbering.xml")?.async("string") ?? "";
     expect(outputDocument).not.toMatch(/Comic Sans|Arial|Georgia|Courier New|<w:highlight\b/);
-    expect(outputDocument).toContain('w:pStyle w:val="LDTitle"');
+    expect(outputDocument).toContain('w:pStyle w:val="WOTitle"');
     expect(outputDocument).toContain('w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"');
-    expect(outputStyles).toContain('w:styleId="LDBody"');
+    expect(outputStyles).toContain('w:styleId="WOBody"');
     expect(outputNumbering).toContain('w:lvlText w:val="%1."');
     expect((await compareTextModuloNumberTokens(broken, repaired.bytes)).equal).toBe(true);
 
@@ -146,12 +146,12 @@ describe("OOXML rebuild", () => {
 
     expect(result.changed).toBe(true);
     expect(document).toContain("<w:numPr>");
-    expect(document).toContain("_LDRef_2");
-    expect(document).toContain(" REF _LDRef_2 \\r \\h ");
+    expect(document).toContain("_WORef_2");
+    expect(document).toContain(" REF _WORef_2 \\r \\h ");
     expect(numbering).toContain('w:lvlText w:val="ARTICLE %1"');
     expect(numbering).toContain('w:lvlText w:val="Section %1.%2"');
     expect(numbering).toContain("<w:isLgl/>");
-    expect(styles).toContain('w:styleId="LDSection"');
+    expect(styles).toContain('w:styleId="WOSection"');
     expect(settings).toContain('w:updateFields w:val="true"');
     expect(await validateDocxPackage(result.bytes)).toEqual([]);
     expect((await compareTextModuloNumberTokens(input, result.bytes)).equal).toBe(true);
@@ -173,7 +173,7 @@ describe("OOXML rebuild", () => {
     const output = await JSZip.loadAsync(result.bytes);
     const outputDocument = await output.file("word/document.xml")?.async("string");
 
-    expect(outputDocument).toContain(" REF _LDRef_1 \\r \\h ");
+    expect(outputDocument).toContain(" REF _WORef_1 \\r \\h ");
     expect((await compareTextModuloNumberTokens(splitInput, result.bytes)).equal).toBe(true);
   });
 
@@ -201,7 +201,7 @@ describe("OOXML rebuild", () => {
       : undefined;
     const numId = sectionParagraph?.match(/<w:numId w:val="(\d+)"\/>/)?.[1];
     expect(numId).toBeTruthy();
-    const inserted = `<w:p><w:pPr><w:pStyle w:val="LDSection"/><w:numPr><w:ilvl w:val="1"/><w:numId w:val="${numId}"/></w:numPr></w:pPr><w:r><w:t>Inserted section</w:t></w:r></w:p>`;
+    const inserted = `<w:p><w:pPr><w:pStyle w:val="WOSection"/><w:numPr><w:ilvl w:val="1"/><w:numId w:val="${numId}"/></w:numPr></w:pPr><w:r><w:t>Inserted section</w:t></w:r></w:p>`;
     zip.file("word/document.xml", document?.replace(sectionParagraph ?? "", `${inserted}${sectionParagraph}`) ?? "");
     const edited = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
     const editedPlan = await createRepairPlan(edited);

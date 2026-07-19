@@ -43,9 +43,8 @@ bracketed placeholders remain bold, but placeholder highlighting is removed.
 Long run-on paragraphs are warnings because changing their wording would violate
 the text-preservation invariant.
 
-The `LD*` style IDs and `_LDRef_*` bookmark names are legacy internal OOXML
-identifiers retained for compatibility with documents repaired before the Word
-Order rename. Their visible Word style names use the current product name.
+Generated styles use `WO*` IDs and generated cross-reference bookmarks use the
+`_WORef_*` prefix. Their visible Word style names use the same product name.
 
 ## Failure boundaries
 

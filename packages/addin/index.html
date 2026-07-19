@@ -19,10 +19,19 @@
       <section class="backup" id="backup" hidden>
         <label><input type="checkbox" id="backup-check" /><span>I saved a backup copy and reviewed the flagged changes.</span></label>
       </section>
+      <section class="success-screen" id="success-screen" aria-live="polite" hidden>
+        <div class="success-mark" aria-hidden="true">✓</div>
+        <p class="eyebrow">Repair complete</p>
+        <h1 id="success-heading" tabindex="-1">Fixes applied.</h1>
+        <p class="success-copy">The repairs from your approved plan are now in the open document.</p>
+        <div class="success-summary" id="success-summary"></div>
+        <p class="save-note"><strong>One last step:</strong> save the document in Word to keep these changes.</p>
+      </section>
     </main>
     <footer>
       <button id="scan" class="secondary" type="button">Scan document</button>
       <button id="apply" class="primary" type="button" hidden>Apply repair</button>
+      <button id="scan-again" class="primary" type="button" hidden>Scan again</button>
     </footer>
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <script type="module" src="/src/taskpane.ts"></script>

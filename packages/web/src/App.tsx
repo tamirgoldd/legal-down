@@ -103,8 +103,8 @@ function PrivacyArchitecture(): React.JSX.Element {
 function AddinNotice(): React.JSX.Element {
   return (
     <section className="addin-notice" id="word-addin">
-      <div><span className="eyebrow">Word add-in</span><h2>Repair inside Word.</h2><p>The add-in uses the same local, deterministic engine. If an older installation still says “Legal Down” or shows a 404 after the rename, replace its cached manifest with the current Word Order version and restart Word.</p></div>
-      <div className="addin-actions"><a className="button dark" href="addin/manifest.xml" download>Download current manifest</a><a className="text-link" href="https://github.com/tamirgoldd/word-order/blob/main/docs/addin.md" target="_blank" rel="noreferrer">Installation and cache help ↗</a></div>
+      <div><span className="eyebrow">Word add-in</span><h2>Repair inside Word.</h2><p>Bring the same local, deterministic engine into the document you already have open. Scan first, review the proposed fixes, then apply them without sending the document to Word Order.</p></div>
+      <div className="addin-actions"><a className="button dark" href="addin/manifest.xml" download>Download current manifest</a><a className="text-link" href="https://github.com/tamirgoldd/word-order/blob/main/docs/addin.md" target="_blank" rel="noreferrer">Installation guide ↗</a></div>
     </section>
   );
 }
@@ -429,7 +429,7 @@ export function App(): React.JSX.Element {
               <details><summary>Will the numbers still work after someone edits the file?</summary><p>Yes. Word Order creates Word's native multilevel numbering rather than hardcoded text, then uses bookmarks and REF fields for cross-references.</p></details>
               <details><summary>Does it rewrite or “improve” contract language?</summary><p>No. It changes formatting and Word structure, not prose. Suspiciously long run-on paragraphs are flagged for human review without inserting breaks or changing their wording.</p></details>
               <details><summary>What happens to tracked changes?</summary><p>Word Order stops and asks you to accept or reject them first. It does not attempt a risky repair through revision markup.</p></details>
-              <details><summary>Why does my Word add-in say “Legal Down” or show a 404?</summary><p>That is the pre-rename manifest cached by Word. <a href="addin/manifest.xml" download>Download the current Word Order manifest</a>, replace the old sideloaded copy, and restart Word. The installation guide includes cache-clearing steps if the old name remains.</p></details>
+              <details><summary>Can I run it inside Word?</summary><p>Yes. <a href="addin/manifest.xml" download>Download the Word Order manifest</a> and follow the installation guide. The add-in scans the open document locally, shows its repair plan, and confirms the fixes after they are applied.</p></details>
             </section>
           </>
         )}
