@@ -83,7 +83,7 @@ pnpm --filter @word-order/cli start -- fix agreement.docx \
 
 Download the [current hosted manifest](https://tamirgoldd.github.io/word-order/addin/manifest.xml) to use the same local repair engine inside Word.
 
-If the task pane still says **Legal Down** or shows a GitHub Pages 404, Word is using the manifest from before the repository rename. Replace that old sideloaded manifest with the current one and restart Word. On Mac, the sideload folder is `~/Library/Containers/com.microsoft.Word/Data/Documents/wef`. See the [complete add-in installation and cache guide](docs/addin.md).
+The task pane scans the open document, shows the proposed repair plan, asks for backup confirmation, and then displays a completion screen summarizing the fixes applied. See the [add-in installation guide](docs/addin.md).
 
 ## Project map
 

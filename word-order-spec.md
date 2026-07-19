@@ -110,13 +110,13 @@ The UIs render this as a review screen. **Nothing is applied without the plan.**
    - Level 3: `numFmt=lowerRoman`, `lvlText="(%4)"`
    - Wire `pPr` indents per level to match the document's existing visual layout.
 2. For every numbered paragraph: **strip the manually typed token** from the run text (preserving everything after it, including formatting of remaining runs), attach `w:numPr` with the correct `ilvl` and the new `numId`. Use `startOverride` for legitimate restarts.
-3. Map paragraphs to named styles (`LDArticle`, `LDSection`, …) added to `styles.xml`, rather than direct formatting, so firms can restyle globally.
+3. Map paragraphs to named styles (`WOArticle`, `WOSection`, …) added to `styles.xml`, rather than direct formatting, so firms can restyle globally.
 
 ### Cross-reference conversion
 
 - **Detect** textual references in body runs: `Section 4.02`, `Sections 4.02 and 4.05`, `Sections 4.02 through 4.06`, `Article VII`, `clause (b)`, `Section 4.02(b)(i)`, case-insensitive variants. Also handle `this Section N` (self-reference).
 - **Resolve** each to a target paragraph in the inferred tree. Unresolvable references (pointing at numbers that don't exist — a huge real-world bug class) go into the plan as warnings: this alone is valuable ("your document references Section 9.4; there is no Section 9.4").
-- **Convert**: insert a bookmark (`_LDRef_<n>`) spanning the target paragraph, replace the reference text with a field: `{ REF _LDRef_<n> \r \h }` (`\r` = paragraph number, `\h` = hyperlink). For ranges/lists, convert each number in the phrase to its own field, keep connective words as text.
+- **Convert**: insert a bookmark (`_WORef_<n>`) spanning the target paragraph, replace the reference text with a field: `{ REF _WORef_<n> \r \h }` (`\r` = paragraph number, `\h` = hyperlink). For ranges/lists, convert each number in the phrase to its own field, keep connective words as text.
 - Set `w:updateFields` in settings.xml so Word refreshes fields on open.
 
 ### Hard edge cases (handle explicitly, with tests)
@@ -175,7 +175,7 @@ The same plan/rebuild pipeline also repairs high-confidence formatting damage:
 novelty or randomly swapped fonts, inconsistent point sizes, accidental
 bold/italic/underline, paragraph alignment and indentation drift, compressed or
 excessive spacing, highlighted placeholders, and uneven section margins. It
-emits reusable `LDTitle`, `LDSubtitle`, `LDSection`, `LDBody`, and `LDSignature`
+emits reusable `WOTitle`, `WOSubtitle`, `WOSection`, `WOBody`, and `WOSignature`
 styles rather than layering on more direct formatting. Flat agreements numbered
 `1.`, `2.`, `3.` are represented as native top-level decimal lists.
 

@@ -29,7 +29,7 @@ export function inferProfile(inventory: ParagraphInventory[]): SchemeProfile {
   const articles = manual.filter((token) => token.kind === "article");
   const sections = manual.filter((token) => token.kind === "section" || token.kind === "decimal");
   const flatSectionHeadings = inventory.filter(isFlatSectionHeading);
-  const nativeFlatSections = inventory.filter((paragraph) => paragraph.native?.level === 0 && paragraph.styleId === "LDSection");
+  const nativeFlatSections = inventory.filter((paragraph) => paragraph.native?.level === 0 && paragraph.styleId === "WOSection");
   const topLevelKind = articles.length === 0 && sections.length === 0 && (flatSectionHeadings.length >= 2 || nativeFlatSections.length > 0)
     ? "flat-section" as const
     : "article" as const;
@@ -231,7 +231,7 @@ export function inferNumbering(
       newNumber = formatLevel(paragraph.manual?.kind ?? null, level, expected);
     }
 
-    const bookmarkName = `_LDRef_${paragraph.index + 1}`;
+    const bookmarkName = `_WORef_${paragraph.index + 1}`;
     const key = semanticKey(level, newNumber, state, profile);
     targets.push({ paragraphIndex: paragraph.index, level, number: newNumber, bookmarkName, semanticKey: key });
 

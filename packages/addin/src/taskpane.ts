@@ -14,6 +14,11 @@ const status = document.querySelector<HTMLDivElement>("#status")!;
 const results = document.querySelector<HTMLDivElement>("#results")!;
 const backup = document.querySelector<HTMLElement>("#backup")!;
 const backupCheck = document.querySelector<HTMLInputElement>("#backup-check")!;
+const intro = document.querySelector<HTMLElement>("#intro")!;
+const successScreen = document.querySelector<HTMLElement>("#success-screen")!;
+const successHeading = document.querySelector<HTMLHeadingElement>("#success-heading")!;
+const successSummary = document.querySelector<HTMLDivElement>("#success-summary")!;
+const scanAgainButton = document.querySelector<HTMLButtonElement>("#scan-again")!;
 
 let sourceBytes: Uint8Array | null = null;
 let activePlan: RepairPlan | null = null;
@@ -86,6 +91,81 @@ function renderPlan(plan: RepairPlan): void {
   }
 }
 
+function repairLabel(count: number, singular: string, plural: string): string {
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function renderSuccess(plan: RepairPlan): void {
+  successSummary.replaceChildren();
+  const applied = element("div", "success-stats");
+  const stats = [
+    [plan.summary.numberingConversions, "numbering repair", "numbering repairs"],
+    [plan.formatting.length, "formatting repair", "formatting repairs"],
+    [plan.summary.crossReferencesConverted, "reference linked", "references linked"]
+  ] as const;
+  for (const [count, singular, plural] of stats) {
+    const stat = element("div", "success-stat");
+    stat.append(element("strong", "", String(count)), element("span", "", count === 1 ? singular : plural));
+    applied.append(stat);
+  }
+  successSummary.append(applied);
+
+  const details = element("div", "applied-list");
+  details.append(element("h2", "", "Applied from your plan"));
+  if (plan.summary.numberingConversions > 0) {
+    details.append(element("p", "", repairLabel(plan.summary.numberingConversions, "numbering repair applied", "numbering repairs applied")));
+  }
+  const formattingGroups = new Map<string, number>();
+  for (const change of plan.formatting) {
+    const label = change.category.replaceAll("-", " ");
+    formattingGroups.set(label, (formattingGroups.get(label) ?? 0) + 1);
+  }
+  for (const [category, count] of formattingGroups) {
+    details.append(element("p", "", repairLabel(count, `${category} fix applied`, `${category} fixes applied`)));
+  }
+  if (plan.summary.crossReferencesConverted > 0) {
+    details.append(element("p", "", repairLabel(plan.summary.crossReferencesConverted, "cross-reference linked", "cross-references linked")));
+  }
+  if (plan.warnings.length > 0 || plan.summary.brokenReferences > 0) {
+    const untouched = plan.warnings.length + plan.summary.brokenReferences;
+    details.append(element("p", "preserved-note", repairLabel(untouched, "review item left unchanged", "review items left unchanged")));
+  }
+  successSummary.append(details);
+
+  intro.hidden = true;
+  status.hidden = true;
+  results.hidden = true;
+  backup.hidden = true;
+  scanButton.hidden = true;
+  applyButton.hidden = true;
+  scanAgainButton.hidden = false;
+  successScreen.hidden = false;
+  window.scrollTo({ top: 0 });
+  successHeading.focus();
+}
+
+function resetTaskPane(): void {
+  sourceBytes = null;
+  activePlan = null;
+  backupCheck.checked = false;
+  successSummary.replaceChildren();
+  successScreen.hidden = true;
+  intro.hidden = false;
+  status.hidden = false;
+  status.textContent = "Ready to scan the open document.";
+  status.className = "notice";
+  results.hidden = true;
+  results.replaceChildren();
+  backup.hidden = true;
+  scanButton.hidden = false;
+  scanButton.disabled = false;
+  applyButton.hidden = true;
+  applyButton.disabled = true;
+  scanAgainButton.hidden = true;
+  window.scrollTo({ top: 0 });
+  scanButton.focus();
+}
+
 async function currentDocumentPackage(): Promise<string> {
   return Word.run(async (context) => {
     const ooxml = context.document.body.getOoxml();
@@ -131,16 +211,14 @@ async function applyRepair(): Promise<void> {
   if (!sourceBytes || !activePlan || !backupCheck.checked) return;
   setBusy(true, "Applying one document replacement…");
   try {
-    const result = await repairDocument(sourceBytes, activePlan, { allowAnomalies: activePlan.anomalies.length > 0 });
+    const completedPlan = activePlan;
+    const result = await repairDocument(sourceBytes, completedPlan, { allowAnomalies: completedPlan.anomalies.length > 0 });
     const repairedFlatOpc = await docxToFlatOpc(result.bytes);
     await Word.run(async (context) => {
       context.document.body.insertOoxml(repairedFlatOpc, Word.InsertLocation.replace);
       await context.sync();
     });
-    status.textContent = "Repair applied. Word will refresh live fields when the document opens.";
-    status.className = "notice success";
-    applyButton.hidden = true;
-    backup.hidden = true;
+    renderSuccess(completedPlan);
     sourceBytes = null;
     activePlan = null;
   } catch (cause) {
@@ -161,5 +239,6 @@ Office.onReady((info) => {
   }
   scanButton.addEventListener("click", () => void scanDocument());
   applyButton.addEventListener("click", () => void applyRepair());
+  scanAgainButton.addEventListener("click", resetTaskPane);
   backupCheck.addEventListener("change", () => { applyButton.disabled = !backupCheck.checked; });
 });

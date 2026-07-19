@@ -42,14 +42,14 @@ function ensureStyles(existing: string | null, plan: RepairPlan): string {
   let xml = existing ?? `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="${WORD_NS}"></w:styles>`;
   const font = plan.formattingProfile.fontFamily;
   const styles = [
-    { id: "LDArticle", name: "Word Order Article", pPr: `<w:keepNext/><w:spacing w:before="240" w:after="120"/><w:ind w:left="${plan.profile.levelIndents[0] ?? 0}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.headingSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.headingSizeHalfPoints}"/>` },
-    { id: "LDSection", name: "Word Order Section", pPr: `<w:keepNext/><w:spacing w:before="240" w:after="120"/><w:ind w:left="${plan.profile.topLevelKind === "flat-section" ? 0 : plan.profile.levelIndents[1] ?? 720}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.headingSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.headingSizeHalfPoints}"/>` },
-    { id: "LDClause", name: "Word Order Clause", pPr: `<w:spacing w:after="80"/><w:ind w:left="${plan.profile.levelIndents[2] ?? 1440}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
-    { id: "LDSubclause", name: "Word Order Subclause", pPr: `<w:spacing w:after="80"/><w:ind w:left="${plan.profile.levelIndents[3] ?? 2160}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
-    { id: "LDTitle", name: "Word Order Title", pPr: `<w:jc w:val="center"/><w:keepNext/><w:spacing w:after="80"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.titleSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.titleSizeHalfPoints}"/>` },
-    { id: "LDSubtitle", name: "Word Order Subtitle", pPr: `<w:jc w:val="center"/><w:keepNext/><w:spacing w:after="240"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:i/><w:sz w:val="${plan.formattingProfile.subtitleSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.subtitleSizeHalfPoints}"/>` },
-    { id: "LDBody", name: "Word Order Body", pPr: `<w:jc w:val="both"/><w:spacing w:after="120" w:line="276" w:lineRule="auto"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
-    { id: "LDSignature", name: "Word Order Signature", pPr: `<w:jc w:val="left"/><w:spacing w:before="80" w:after="120"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` }
+    { id: "WOArticle", name: "Word Order Article", pPr: `<w:keepNext/><w:spacing w:before="240" w:after="120"/><w:ind w:left="${plan.profile.levelIndents[0] ?? 0}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.headingSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.headingSizeHalfPoints}"/>` },
+    { id: "WOSection", name: "Word Order Section", pPr: `<w:keepNext/><w:spacing w:before="240" w:after="120"/><w:ind w:left="${plan.profile.topLevelKind === "flat-section" ? 0 : plan.profile.levelIndents[1] ?? 720}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.headingSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.headingSizeHalfPoints}"/>` },
+    { id: "WOClause", name: "Word Order Clause", pPr: `<w:spacing w:after="80"/><w:ind w:left="${plan.profile.levelIndents[2] ?? 1440}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
+    { id: "WOSubclause", name: "Word Order Subclause", pPr: `<w:spacing w:after="80"/><w:ind w:left="${plan.profile.levelIndents[3] ?? 2160}"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
+    { id: "WOTitle", name: "Word Order Title", pPr: `<w:jc w:val="center"/><w:keepNext/><w:spacing w:after="80"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:b/><w:sz w:val="${plan.formattingProfile.titleSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.titleSizeHalfPoints}"/>` },
+    { id: "WOSubtitle", name: "Word Order Subtitle", pPr: `<w:jc w:val="center"/><w:keepNext/><w:spacing w:after="240"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:i/><w:sz w:val="${plan.formattingProfile.subtitleSizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.subtitleSizeHalfPoints}"/>` },
+    { id: "WOBody", name: "Word Order Body", pPr: `<w:jc w:val="both"/><w:spacing w:after="120" w:line="276" w:lineRule="auto"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` },
+    { id: "WOSignature", name: "Word Order Signature", pPr: `<w:jc w:val="left"/><w:spacing w:before="80" w:after="120"/>`, rPr: `<w:rFonts w:ascii="${font}" w:hAnsi="${font}"/><w:sz w:val="${plan.formattingProfile.bodySizeHalfPoints}"/><w:szCs w:val="${plan.formattingProfile.bodySizeHalfPoints}"/>` }
   ];
   const additions = styles.flatMap((style) => {
     const styleId = style.id;
@@ -96,8 +96,8 @@ function ensureContentTypes(existing: string, parts: Array<{ name: string; type:
 }
 
 function styleForLevel(level: number, plan: RepairPlan): string {
-  if (level === 0 && plan.profile.topLevelKind === "flat-section") return "LDSection";
-  return ["LDArticle", "LDSection", "LDClause", "LDSubclause"][Math.min(level, 3)] ?? "LDClause";
+  if (level === 0 && plan.profile.topLevelKind === "flat-section") return "WOSection";
+  return ["WOArticle", "WOSection", "WOClause", "WOSubclause"][Math.min(level, 3)] ?? "WOClause";
 }
 
 export async function rebuildDocx(docx: DocxPackage, plan: RepairPlan): Promise<Uint8Array> {

@@ -84,11 +84,11 @@ function classifyRoles(inventory: ParagraphInventory[], targets: NumberedTarget[
 
 function desiredStyle(role: FormattingRole): string {
   return {
-    title: "LDTitle",
-    subtitle: "LDSubtitle",
-    heading: "LDSection",
-    body: "LDBody",
-    signature: "LDSignature"
+    title: "WOTitle",
+    subtitle: "WOSubtitle",
+    heading: "WOSection",
+    body: "WOBody",
+    signature: "WOSignature"
   }[role];
 }
 
