@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "pnpm -r --if-present build",
-    "build:pages": "pnpm --filter @word-order/core build && pnpm --filter @word-order/web build && pnpm --filter @word-order/addin build && cp -R packages/addin/dist packages/web/dist/addin",
+    "build:pages": "pnpm --filter @word-order/core build && pnpm --filter @word-order/web build && pnpm --filter @word-order/addin build && cp -R packages/addin/dist packages/web/dist/addin && cp packages/addin/manifest.xml packages/web/dist/addin/manifest.xml",
     "dev": "pnpm --filter @word-order/core build && pnpm --filter @word-order/web dev",
     "test": "vitest run",
     "test:watch": "vitest",
